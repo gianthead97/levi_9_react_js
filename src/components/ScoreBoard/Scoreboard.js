@@ -3,27 +3,27 @@ import './Scoreboard.css';
 import getEntries from '../../api/fromServer';
 
 class Scoreboard extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            scroes: [
-                { pts : 23, date : "21.02.2010."},
-                { pts : 26, date : "22.02.2010."},
-                { pts : 33, date : "23.02.2010."},
-                { pts : 43, date : "24.02.2010."},
-                { pts : 53, date : "25.02.2010."},
-            ]
-        }
+    state = {scores : []};
+
+    componentDidMount() {
+        this.fromBase();
+    }
+    async fromBase() {
+        let values = await getEntries();
+        values = values.sort((a, b) => b.pts - a.pts);
+        values = values.slice(0, 5);
+        this.setState({scores: values});
     }
 
     render() {
-        console.log(getEntries());
+        
+     
         let i = 1;
-        const tableContent = this.state.scroes.map(
+        let tableContent = this.state.scores.map(
         score => <tr className="row" >
             <td className="cell">{i++}.</td>
             <td className="cell">{score.pts}</td>
-            <td className="cell">{score.date}</td>
+            <td className="cell">{score.date.substring(0, score.date.lastIndexOf('.')).replace('T', ' ')}</td>
             </tr>
         );
         
